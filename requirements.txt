@@ -1,0 +1,10 @@
+fastapi==0.115.0
+uvicorn==0.30.0
+pymongo==4.6.3
+pandas==2.2.2
+python-dotenv==1.0.1
+pydantic==2.7.4
+
+# Neo4j (pour le graphe)
+neo4j
+py2neo

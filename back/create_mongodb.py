@@ -8,8 +8,8 @@ DB_NAME = "proteins_data"
 COLLECTION_NAME = "proteins"
 
 # Chemin par défaut basé sur TON arborescence
-BACK_DIR = Path(__file__).resolve().parent
-DEFAULT_DATA_FILE = BACK_DIR / "data" / "data_sample.tsv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATA_FILE = PROJECT_ROOT / "data" / "data_sample.tsv"
 
 
 def get_database():
