@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers.proteins import router as proteins_router
+from routers.graph import router as graph_router
 
 app = FastAPI(title="NoSQL Project")
 
@@ -14,10 +15,11 @@ app.add_middleware(
 )
 
 app.include_router(proteins_router)
+app.include_router(graph_router)
+
 
 @app.get("/")
 async def root():
     return {
-        "message": "API running",
-        "task1": "MongoDB document store"
+        "message": "API running"
     }

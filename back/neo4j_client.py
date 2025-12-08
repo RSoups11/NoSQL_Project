@@ -3,7 +3,7 @@ import os
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "nosqlproject")
 
 _driver = None
 
@@ -22,7 +22,7 @@ def close_driver():
 def init_constraints():
     """
     Crée les contraintes / index nécessaires dans Neo4j.
-    On suppose que chaque protéine est identifiée par 'entry' (colonne 'Entry').
+    Chaque protéine est identifiée par 'entry' (colonne 'Entry').
     """
     driver = get_driver()
     cypher = """
