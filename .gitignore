@@ -1,0 +1,32 @@
+# --- PYTHON ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Virtual environments
+venv/
+.venv/
+nosql_env/
+
+# IDE / éditeurs
+.vscode/
+.idea/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# FastAPI reload cache
+*.sqlite
+
+# Logs
+*.log
+
+# Environnement projet
+.env
+.env.*
