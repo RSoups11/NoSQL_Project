@@ -95,19 +95,26 @@ Il permet :
   "center": {
     "entry": "A0A024QYR9",
     "name": "Phosphatidylinositol...",
-    "organism": ""
+    "organism": "Mus musculus (Mouse)"
   },
   "neighbors": [
     {
       "entry": "A0A1V0DNR6",
       "name": "Phosphatidylinositol...",
-      "organism": "",
+      "organism": "Mus musculus (Mouse)",
       "weight": 1
+    },
+    {
+      "entry": "Q5U1U8",
+      "name": "protein-tyrosine-phosphatase (EC 3.1.3.48)",
+      "organism": "Mus musculus (Mouse)",
+      "weight": 0.36363636363636365,
+      ...
     }
   ],
   "summary": {
-    "center_entry": "P12345",
-    "num_neighbors": 12
+    "center_entry": "A0A024QYR9",
+    "num_neighbors": 108
   }
 }
 ```
@@ -125,28 +132,28 @@ Vous verrez uniquement le **mini-graphe construit pour cette requête**.
 
 ---
 
-# 4. **Technique Big Data : Justification & Implémentation**
+# **Technique Big Data : Justification & Implémentation**
 
-## 4.1. Problème de l’approche naïve
+## Problème de l’approche naïve
 
 Construire un graphe complet nécessiterait :
 
 * de comparer **toutes les paires** de protéines,
-* calcul de Jaccard pour chaque paire → **O(n²)**
-* stockage d’un graphe potentiellement gigantesque dans Neo4j → non scalable.
+* calcul de Jaccard pour chaque paire -> **O(n²)**
+* stockage d’un graphe potentiellement gigantesque dans Neo4j -> non scalable.
 
 Exemple :
-100 000 protéines → 5 milliards de comparaisons → impossible en mémoire / en temps raisonnable.
+100 000 protéines -> 5 milliards de comparaisons -> impossible en mémoire / en temps raisonnable.
 
-👉 **C’est pour cela que nous n’avons PAS construit de graphe global.**
+**C’est pour cela que nous n’avons PAS construit de graphe global.**
 
 ---
 
-## 4.2. Approche Big Data retenue
+## Approche Big Data retenue
 
 Notre approche est basée sur trois idées clés :
 
-### **1) Index inversé en mémoire**
+### **Index inversé en mémoire**
 
 Au lieu de comparer toutes les protéines :
 
@@ -159,11 +166,11 @@ protein_meta[entry] = {"name": "...", "organism": "..."}
 domain_index[domain] = {"P12345", "A54321", ...}
 ```
 
-Cet index est chargé **une seule fois** au premier appel (`@lru_cache`).
+Cet index est chargé **une seule fois** au premier appel.
 
 ---
 
-### **2) Recherche des voisins en O(n) ou moins**
+### Recherche des voisins en O(n) ou moins
 
 Pour une protéine donnée `entry` :
 
@@ -176,7 +183,7 @@ for d in target_domains:
     candidates |= domain_index[d]
 ```
 
-→ Plus besoin d’examiner toutes les protéines.
+-> Plus besoin d’examiner toutes les protéines.
 
 3. On calcule Jaccard seulement sur ces candidats.
 
@@ -208,11 +215,11 @@ def compute_neighbors(entry, threshold):
     return center, sorted(neighbors, key=lambda x: x["weight"], reverse=True)
 ```
 
-👉 Le temps de calcul dépend des **vrais voisins potentiels**, pas de n².
+Le temps de calcul dépend des **vrais voisins potentiels**, pas de n².
 
 ---
 
-### **3) Sous-graphe local dans Neo4j**
+### Sous-graphe local dans Neo4j
 
 Au lieu de stocker tout le graphe, on stocke uniquement le voisinage demandé.
 
@@ -220,7 +227,7 @@ Code utilisé :
 
 ```python
 def push_ego_graph_to_neo4j(center, neighbors):
-    session.run("MATCH (n:Protein) DETACH DELETE n")  # Neo4j propre
+    session.run("MATCH (n:Protein) DETACH DELETE n")
 
     session.run("""
         UNWIND $rows AS row
@@ -239,41 +246,18 @@ def push_ego_graph_to_neo4j(center, neighbors):
 
 Résultat :
 
-* Neo4j ne contient jamais plus que quelques nœuds.
+* Neo4j ne contient jamais TOUT les nœuds.
+* La base est effacé et reconstruite à chaque requête
 * La visualisation est **à la demande**, scalable, instantanée.
 
 ---
 
-# 5. Résumé de la démarche Big Data
-
-| Problème                                        | Solution                                        |
-| ----------------------------------------------- | ----------------------------------------------- |
-| Construction d’un graphe global O(n²) ingérable | Calcul local, à la demande                      |
-| Trop de comparaisons                            | Index inversé sur InterPro                      |
-| Trop d’arêtes                                   | Seulement les voisins pertinents                |
-| Neo4j trop lourd                                | Sous-graphe local réinitialisé à chaque requête |
-| Mémoire importante                              | Cache LRU + peu de stockage en Neo4j            |
-
-👉 Notre solution respecte parfaitement l’attendu du sujet :
-**idée + implémentation concrète d’une solution scalable**, capable de traiter un dataset massif sans explosion de complexité.
-
----
-
-# 6. Conclusion
+# Conclusion
 
 La Task 2 implémente une **approche big data réelle** :
 
 * index en mémoire,
 * calcul du voisinage linéaire,
 * sous-graphe local dans Neo4j,
-* API simple pour la visualisation.
-
-Cette approche est **beaucoup plus scalable** que la construction brute d'un graphe complet, et parfaitement adaptée à une démo de projet NoSQL.
-
+* API simple d'utilisation
 ---
-
-Si tu veux, je peux maintenant rédiger :
-
-* un **Task3.md**,
-* un **README global**,
-* ou préparer les phrases pour ta **soutenance** (explications courtes et efficaces).
