@@ -3,7 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from big_graph import compute_neighbors, push_ego_graph_to_neo4j
+from graph_db.big_graph import compute_neighbors, push_ego_graph_to_neo4j
 
 router = APIRouter(prefix="/task2", tags=["Task 2 - Big graph"])
 

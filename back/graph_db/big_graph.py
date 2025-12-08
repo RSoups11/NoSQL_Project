@@ -2,8 +2,8 @@ from collections import defaultdict
 from functools import lru_cache
 from typing import Dict, List, Tuple, Any
 
-from create_mongodb import get_collection
-from neo4j_client import get_driver, init_constraints
+from document_db.create_mongodb import get_collection
+from graph_db.neo4j_client import get_driver, init_constraints
 
 
 def parse_domains(interpro_field: str) -> List[str]:

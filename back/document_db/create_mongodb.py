@@ -10,7 +10,7 @@ DB_NAME = "proteins_data"
 COLLECTION_NAME = "proteins"
 
 # Chemin par défaut basé sur TON arborescence
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_FILE = PROJECT_ROOT / "data" / "data_sample.tsv"
 
 

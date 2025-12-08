@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 
-from create_mongodb import mongo_load_tsv, get_protein_by_fields
+from document_db.create_mongodb import mongo_load_tsv, get_protein_by_fields
 
 router = APIRouter()
 
