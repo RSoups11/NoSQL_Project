@@ -1,6 +1,8 @@
 import pymongo
 import pandas as pd
 from pathlib import Path
+from pymongo import ASCENDING
+from typing import Dict, Any
 
 MONGO_HOST = "localhost"
 MONGO_PORT = 27017
@@ -24,12 +26,12 @@ def get_collection():
 
 def init_indexes():
     col = get_collection()
-    col.create_index("Entry")
-    col.create_index("Protein names")
-    col.create_index("Entry Name")
-    col.create_index("Organism")
-    col.create_index("EC number")
-    col.create_index("InterPro")
+    col.create_index([("Entry", ASCENDING)])
+    col.create_index([("Protein names", ASCENDING)])
+    col.create_index([("Entry Name", ASCENDING)])
+    col.create_index([("Organism", ASCENDING)])
+    col.create_index([("EC number", ASCENDING)])
+    col.create_index([("InterPro", ASCENDING)])
 
 
 def mongo_load_tsv(file_path: str | None = None) -> int:
@@ -62,17 +64,24 @@ def mongo_load_tsv(file_path: str | None = None) -> int:
     return len(records)
 
 
-def get_protein_by_fields(filters: dict):
+def get_protein_by_fields(filters: Dict[str, str]):
     """
-    Recherche multicritères (regex insensitive).
-    Les clés doivent être celles du TSV :
-    Entry, Protein names, Entry Name, Organism, Sequence, EC number, InterPro
+    Recherche multi-champs avec regex insensible à la casse.
+    -> Si on cherche organism="Mouse", ça matche "Mus musculus (Mouse)".
     """
     col = get_collection()
+    query: Dict[str, Any] = {}
 
-    query = {}
     for key, value in filters.items():
-        if value:
-            query[key] = {"$regex": value, "$options": "i"}
+        value = value.strip()
+        if not value:
+            continue
 
-    return list(col.find(query, {"_id": 0}))
+        # On échappe le texte et on utilise un regex "contient", insensible à la casse
+        query[key] = {
+            "$regex": value,
+            "$options": "i",  # case-insensitive
+        }
+
+    cursor = col.find(query, {"_id": 0})
+    return list(cursor)

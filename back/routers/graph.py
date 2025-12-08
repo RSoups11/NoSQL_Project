@@ -9,7 +9,7 @@ router = APIRouter(prefix="/task2", tags=["Task 2 - Big graph"])
 
 
 class EgoGraphRequest(BaseModel):
-    entry: str
+    entry: str =  "A0A024QYR9"
     jaccard_threshold: float = 0.3
 
 

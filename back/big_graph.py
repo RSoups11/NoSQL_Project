@@ -57,11 +57,13 @@ def _load_indexes() -> Tuple[Dict[str, set], Dict[str, Dict[str, Any]], Dict[str
         if not entry or not domains:
             continue
 
+        organism = doc.get("Organism", "")
+
         protein_domains[entry] = domains
         protein_meta[entry] = {
             "entry": entry,
             "name": doc.get("Protein names", ""),
-            "organism": doc.get("Organism", ""),
+            "organism": organism,
         }
         for d in domains:
             domain_index[d].add(entry)
@@ -121,21 +123,15 @@ def compute_neighbors(entry: str, threshold: float) -> Tuple[Dict[str, Any], Lis
 
 
 def push_ego_graph_to_neo4j(center: Dict[str, Any], neighbors: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Construit dans Neo4j un sous-graphe :
-       (center)-[:SIMILAR {weight}]->(neighbor_i)
-    On efface d'abord l'ancien graphe pour garder un Neo4j propre et léger.
-    """
     driver = get_driver()
     init_constraints()
 
     center_entry = center["entry"]
 
     with driver.session() as session:
-        # On nettoie tout le graphe précédent
+        # On garde Neo4j petit : on efface les anciens noeuds
         session.run("MATCH (n:Protein) DETACH DELETE n")
 
-        # On prépare les noeuds : center + tous les voisins
         nodes = [center] + neighbors
         session.run(
             """
@@ -147,7 +143,6 @@ def push_ego_graph_to_neo4j(center: Dict[str, Any], neighbors: List[Dict[str, An
             rows=nodes,
         )
 
-        # Préparation des arêtes center -> neighbors
         edges = [
             {"source": center_entry, "target": n["entry"], "weight": n["weight"]}
             for n in neighbors
