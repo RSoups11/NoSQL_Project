@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 
-from document_db.create_mongodb import mongo_load_tsv, get_protein_by_fields
+from document_db.create_mongodb import mongo_load_tsv, get_protein_by_fields, get_collection
 
 router = APIRouter()
 
@@ -49,13 +49,45 @@ async def load_default_data():
 @router.post("/task1/load/{file_name}", tags=["Task 1"])
 async def load_named_file(file_name: str):
     try:
-        # parents[1] = back/
-        back_dir = Path(__file__).resolve().parents[1]
-        file_path = back_dir / "data" / file_name
+        # parents[2] = repository root; data/ is at the root level
+        project_root = Path(__file__).resolve().parents[2]
+        file_path = project_root / "data" / file_name
 
         inserted = mongo_load_tsv(str(file_path))
         return {"message": "MongoDB populated", "inserted": inserted, "file": str(file_path)}
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/stats", tags=["Statistics"])
+async def get_stats():
+    """
+    Calcule des statistiques globales sur les protéines :
+    - Total de protéines
+    - Protéines avec/sans domaine (InterPro)
+    - Protéines avec/sans fonction (EC number)
+    """
+    try:
+        col = get_collection()
+
+        # Total de protéines
+        total = col.count_documents({})
+
+        # Protéines sans domaine (InterPro vide ou absent)
+        without_domain = col.count_documents({"InterPro": {"$in": ["", None]}})
+        with_domain = total - without_domain
+
+        # Protéines sans fonction (EC number vide ou absent)
+        without_fct = col.count_documents({"EC number": {"$in": ["", None]}})
+        with_fct = total - without_fct
+
+        return {
+            "totalProt": total,
+            "protWithDomain": with_domain,
+            "protWithoutDomain": without_domain,
+            "protWithFct": with_fct,
+            "protWithoutFct": without_fct,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
