@@ -92,7 +92,8 @@ const pages = {
   import: document.getElementById("page-import"),
   search: document.getElementById("page-search"),
   stats: document.getElementById("page-stats"),
-  visu: document.getElementById("page-visu")
+  visu: document.getElementById("page-visu"), 
+  annot: document.getElementById("page-annot")
 };
 
 function showPage(name) {
@@ -521,6 +522,82 @@ visuForm.addEventListener("submit", async (e) => {
     visuResults.style.display = "none";
   }
 });
+
+// ==========================================
+// TASK 4 - ANNOTATION
+// ==========================================
+const annotForm = document.getElementById("annot-form");
+const annotStatus = document.getElementById("annot-status");
+const annotResults = document.getElementById("annot-results");
+const annotCenter = document.getElementById("annot-center");
+const annotPreds = document.getElementById("annot-preds");
+
+if (annotForm) {
+  annotForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const entry = document.getElementById("annot-entry").value.trim();
+    const thr = parseFloat(document.getElementById("annot-threshold").value.trim() || "0.3");
+    const topk = parseInt(document.getElementById("annot-topk").value.trim() || "5", 10);
+    const labelField = document.getElementById("annot-labelfield").value.trim() || "EC number";
+
+    if (!entry) {
+      showStatus(annotStatus, "⚠ Veuillez saisir un Entry.", "error");
+      return;
+    }
+    if (Number.isNaN(thr) || thr < 0 || thr > 1) {
+      showStatus(annotStatus, "⚠ Seuil Jaccard invalide (0..1).", "error");
+      return;
+    }
+
+    showStatus(annotStatus, "Annotation en cours…", "loading");
+    annotResults.style.display = "none";
+    annotCenter.innerHTML = "";
+    annotPreds.innerHTML = "";
+
+    try {
+      const body = await apiPost("/task4/annotate", {
+        entry: entry,
+        jaccard_threshold: thr,
+        label_field: labelField,
+        top_k: topk,
+        persist: false
+      });
+
+      hideStatus(annotStatus);
+      annotResults.style.display = "block";
+
+      const center = body.center || {};
+      annotCenter.innerHTML = `
+        <p><strong>Entry :</strong> ${body.entry}</p>
+        <p><strong>Nom :</strong> ${center.name || "N/A"}</p>
+        <p><strong>Organisme :</strong> ${center.organism || "N/A"}</p>
+        <p><strong>Déjà labellisée ?</strong> ${body.already_labeled ? "Oui" : "Non"}</p>
+        ${body.already_labeled ? `<p><strong>Labels existants :</strong> ${(body.existing_labels || []).join(", ")}</p>` : ""}
+        <p><strong>Voisins trouvés :</strong> ${body.neighbors_found} | <strong>Voisins utilisés (labellisés) :</strong> ${body.neighbors_used_for_vote}</p>
+      `;
+
+      const preds = body.predictions || [];
+      if (!preds.length) {
+        annotPreds.innerHTML = `<li>${body.note || "Aucune prédiction."}</li>`;
+        return;
+      }
+
+      preds.forEach(p => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${p.label}</strong>
+          <br><small>score=${p.score.toFixed(4)} | score_norm=${(p.score_norm ?? 0).toFixed(4)} | support=${p.support}</small>
+        `;
+        annotPreds.appendChild(li);
+      });
+
+    } catch (err) {
+      showStatus(annotStatus, `✗ Erreur : ${err.message}`, "error");
+      annotResults.style.display = "none";
+    }
+  });
+}
 
 // ==========================================
 // INITIALIZATION
