@@ -17,6 +17,7 @@
       <button data-page="search" class="nav-btn">INFORMATIONS</button>
       <button data-page="stats" class="nav-btn">STATISTIQUES</button>
       <button data-page="visu" class="nav-btn">VISUALISATION</button>
+      <button data-page="annot" class="nav-btn">ANNOTATION</button>
     </nav>
   </div>
   <!-- <div class="header-right">
@@ -246,6 +247,61 @@
           <ul id="visu-neighbors" class="neighbors-list"></ul>
         </div>
       </div>
+    </div>
+  </section>
+  <!-- ========================================
+     PAGE ANNOTATION (TASK 4)
+     ======================================== -->
+  <section id="page-annot" class="page">
+    <h2>Annotation de fonction (Task 4)</h2>
+
+    <div class="card">
+      <h3>Prédire une fonction</h3>
+      <p>
+        On récupère les voisins via Jaccard/InterPro (Task2), puis on propose les labels (ex: EC number)
+        les plus probables par vote pondéré.
+      </p>
+
+      <form id="annot-form">
+        <div class="form-grid">
+          <div class="field-row">
+            <label for="annot-entry">Entry :</label>
+            <input type="text" id="annot-entry" placeholder="ex: A0A024QYR9" required>
+          </div>
+
+          <div class="field-row">
+            <label for="annot-threshold">Seuil Jaccard :</label>
+            <input type="number" id="annot-threshold" value="0.2" min="0" max="1" step="0.01" required>
+          </div>
+
+          <div class="field-row">
+            <label for="annot-topk">Top K labels :</label>
+            <input type="number" id="annot-topk" value="5" min="1" max="50" required>
+          </div>
+
+          <div class="field-row">
+            <label for="annot-labelfield">Champ label :</label>
+            <input type="text" id="annot-labelfield" value="EC number" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Annoter</button>
+        </div>
+      </form>
+
+      <div id="annot-status" class="status-message"></div>
+    </div>
+
+    <div class="card" id="annot-results-card" style="display:none;">
+      <h3>Résultat</h3>
+
+      <div id="annot-center" class="center-info"></div>
+
+      <div class="summary-info" id="annot-summary"></div>
+
+      <h4>Labels prédits</h4>
+      <ul id="annot-preds" class="neighbors-list"></ul>
     </div>
   </section>
 </main>

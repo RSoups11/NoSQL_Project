@@ -646,6 +646,26 @@ footer.app-footer p {
 }
 
 /* ==========================================
+   TASK 4 - BADGES
+   ========================================== */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: #003366;
+  color: #FFB91C;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.badge-secondary {
+  background: #6c757d;
+  color: #fff;
+}
+
+/* ==========================================
    UTILITY CLASSES
    ========================================== */
 .hidden {
