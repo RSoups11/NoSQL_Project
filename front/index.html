@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoSQL Proteins Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js"></script>
+</head>
+<body>
+
+<header class="rectangle">
+  <div class="header-left">
+    <nav>
+      <button data-page="import" class="nav-btn active">IMPORT</button>
+      <button data-page="search" class="nav-btn">INFORMATIONS</button>
+      <button data-page="stats" class="nav-btn">STATISTIQUES</button>
+      <button data-page="visu" class="nav-btn">VISUALISATION</button>
+    </nav>
+  </div>
+  <!-- <div class="header-right">
+    <img src="rtt.png" alt="Logo RTT" class="logo" onerror="this.style.display='none'">
+  </div> -->
+</header>
+
+<main>
+  <!-- ========================================
+       PAGE IMPORT
+       ======================================== -->
+  <section id="page-import" class="page active app-importPage">
+    <h2 class="titre">Importer des données</h2>
+
+    <div class="card">
+      <h3>Import de fichier TSV</h3>
+      <p>Sélectionnez un fichier TSV à charger dans la base de données</p>
+
+      <input type="file" id="file-upload" accept=".tsv" style="display: none;">
+      <label for="file-upload" class="custom-file-upload">
+        <i class="fas fa-cloud-arrow-up"></i>
+        <span>Import</span>
+      </label>
+
+      <div id="selected-filename" class="selected-file"></div>
+    </div>
+
+    <div class="card">
+      <h3>Chargement depuis le serveur</h3>
+      <p>Charger un fichier depuis le dossier <code>data/</code> du serveur</p>
+      <div class="input-group">
+        <label for="input-filename">Nom du fichier :</label>
+        <input type="text" id="input-filename" placeholder="data_sample.tsv">
+        <button id="btn-load-named" class="btn btn-primary">Charger</button>
+      </div>
+      <button id="btn-load-default" class="btn btn-secondary">Charger le fichier par défaut</button>
+    </div>
+
+    <div id="import-status" class="status-message"></div>
+
+    <div class="card">
+      <h3>Prévisualisation des données</h3>
+      <p>Affichage des protéines chargées dans la base MongoDB</p>
+      <button id="btn-preview-data" class="btn btn-secondary">Afficher les données</button>
+      <div id="import-table-container">
+        <table id="import-table" class="data-table">
+          <thead>
+            <tr>
+              <th>Entry</th>
+              <th>Protein names</th>
+              <th>Entry name</th>
+              <th>Organism</th>
+              <th>Sequence</th>
+              <th>EC number</th>
+              <th>InterPro</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       PAGE RECHERCHE / INFORMATIONS
+       ======================================== -->
+  <section id="page-search" class="page">
+    <h2>Recherche de protéines</h2>
+
+    <div class="card">
+      <h3>Critères de recherche</h3>
+      <p>Remplissez un ou plusieurs champs pour filtrer les protéines (recherche insensible à la casse)</p>
+
+      <form id="search-form">
+        <div class="form-grid">
+          <div class="field-row">
+            <label for="search-entry">Entry :</label>
+            <input type="text" id="search-entry" name="entry" placeholder="ex: A0A024QYR9">
+          </div>
+
+          <div class="field-row">
+            <label for="search-protein-name">Protein name :</label>
+            <input type="text" id="search-protein-name" name="protein_name" placeholder="ex: kinase">
+          </div>
+
+          <div class="field-row">
+            <label for="search-entry-name">Entry name :</label>
+            <input type="text" id="search-entry-name" name="entry_name" placeholder="ex: PKD1_MOUSE">
+          </div>
+
+          <div class="field-row">
+            <label for="search-organism">Organism :</label>
+            <input type="text" id="search-organism" name="organism" placeholder="ex: Mus musculus">
+          </div>
+
+          <div class="field-row">
+            <label for="search-sequence">Sequence :</label>
+            <input type="text" id="search-sequence" name="sequence" placeholder="ex: MERGG">
+          </div>
+
+          <div class="field-row">
+            <label for="search-ec-number">EC number :</label>
+            <input type="text" id="search-ec-number" name="ec_number" placeholder="ex: 2.7.11.1">
+          </div>
+
+          <div class="field-row">
+            <label for="search-interpro">InterPro :</label>
+            <input type="text" id="search-interpro" name="interpro" placeholder="ex: IPR000719">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Rechercher</button>
+          <button type="button" id="btn-reset-search" class="btn btn-secondary">Réinitialiser</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="search-status" class="status-message"></div>
+
+    <div class="card" id="search-results-card" style="display: none;">
+      <h3>Résultats</h3>
+      <div id="search-table-container">
+        <table id="results-table" class="data-table">
+          <thead>
+            <tr>
+              <th>Entry</th>
+              <th>Protein names</th>
+              <th>Entry name</th>
+              <th>Organism</th>
+              <th>Sequence</th>
+              <th>EC number</th>
+              <th>InterPro</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       PAGE STATISTIQUES
+       ======================================== -->
+  <section id="page-stats" class="page">
+    <h2>Statistiques sur les protéines</h2>
+
+    <div class="card">
+      <h3>Vue d'ensemble</h3>
+      <p>Statistiques globales calculées à partir de la base MongoDB</p>
+      <button id="btn-refresh-stats" class="btn btn-primary">Rafraîchir les statistiques</button>
+    </div>
+
+    <div id="stats-status" class="status-message"></div>
+
+    <div id="stats-container" class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Total de protéines</div>
+        <div class="stat-value" id="stat-total">-</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔬</div>
+        <div class="stat-label">Avec domaine (InterPro)</div>
+        <div class="stat-value" id="stat-with-domain">-</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚪</div>
+        <div class="stat-label">Sans domaine</div>
+        <div class="stat-value" id="stat-without-domain">-</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚙️</div>
+        <div class="stat-label">Avec fonction (EC number)</div>
+        <div class="stat-value" id="stat-with-fct">-</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚪</div>
+        <div class="stat-label">Sans fonction</div>
+        <div class="stat-value" id="stat-without-fct">-</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       PAGE VISUALISATION
+       ======================================== -->
+  <section id="page-visu" class="page app-visuPage">
+    <h2 class="titre">Visualisation</h2>
+
+    <div class="card">
+      <h3>Paramètres du graphe</h3>
+      <p>Visualise les voisins d'une protéine en fonction du seuil de Jaccard sur les domaines InterPro</p>
+
+      <form id="visu-form" class="visu-form">
+        <div class="field-row">
+          <label for="visu-entry">Entry :</label>
+          <input type="text" id="visu-entry" placeholder="A0A024QYR9" required>
+        </div>
+
+        <div class="field-row">
+          <label for="visu-threshold">Seuil :</label>
+          <input type="number" id="visu-threshold" step="0.1" min="0" max="1" value="0.3" placeholder="0.3" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary submitButton">SUBMIT</button>
+      </form>
+    </div>
+
+    <div id="visu-status" class="status-message"></div>
+
+    <div id="visu-results" style="display: none;">
+      <div class="card">
+        <h3>Graphe 3D des voisins</h3>
+        <div id="3d-graph" class="graph-3d-container"></div>
+      </div>
+
+      <div class="card">
+        <h3>Informations</h3>
+        <div id="visu-center" class="center-info"></div>
+        <div id="visu-summary" class="summary-info"></div>
+        <div id="visu-neighbors-container">
+          <ul id="visu-neighbors" class="neighbors-list"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <p>Ce site a été élaboré dans le cadre d'un travail pour le cours de bases de données NoSQL enseigné par Mr.Sabeur. Il a été réalisé par un groupe de travail composé d'étudiants de 3ème année de Télécom Nancy.</p>
+  <p>© 2025</p>
+</footer>
+
+<script src="app.js"></script>
+
+</body>
+</html>

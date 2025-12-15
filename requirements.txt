@@ -8,3 +8,4 @@ pydantic==2.7.4
 # Neo4j (pour le graphe)
 neo4j
 py2neo
+requests>=2.31.0
