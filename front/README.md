@@ -2,7 +2,7 @@
 
 Application web en **HTML + CSS + JavaScript vanilla** pour explorer la base de données de protéines.
 
-## 🎯 Fonctionnalités
+## Fonctionnalités
 
 L'application propose 4 pages principales :
 
@@ -13,7 +13,7 @@ L'application propose 4 pages principales :
 
 ---
 
-## 📋 Prérequis
+## Prérequis
 
 Avant de lancer le frontend, assurez-vous que :
 
@@ -46,9 +46,9 @@ Vous devriez recevoir : `{"message": "API running"}`
 
 ---
 
-## 🚀 Lancement du Frontend
+## Lancement du Frontend
 
-### Méthode 1 : Serveur HTTP Python (recommandé)
+### Méthode 1 : Serveur HTTP Python
 
 ```bash
 cd front
@@ -76,7 +76,7 @@ Double-cliquez directement sur `index.html` dans votre explorateur de fichiers.
 
 ---
 
-## 🗂️ Structure des fichiers
+## Structure des fichiers
 
 ```
 front/
@@ -88,7 +88,7 @@ front/
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 Par défaut, l'application se connecte au backend sur : `http://127.0.0.1:8000`
 
@@ -100,7 +100,7 @@ const API_BASE_URL = "http://127.0.0.1:8000";
 
 ---
 
-## 📖 Guide d'utilisation
+## Guide d'utilisation
 
 ### Page Import
 
@@ -157,7 +157,7 @@ const API_BASE_URL = "http://127.0.0.1:8000";
 
 ---
 
-## 🐛 Résolution de problèmes
+## Résolution de problèmes
 
 ### Erreur : "Failed to fetch"
 
@@ -198,7 +198,7 @@ uvicorn main:app --reload
 
 ---
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 - **HTML5** - Structure
 - **CSS3** - Styles (design responsive)
@@ -209,7 +209,7 @@ uvicorn main:app --reload
 
 ---
 
-## 📝 Notes techniques
+## Notes techniques
 
 ### API Endpoints utilisés
 
@@ -235,7 +235,7 @@ Les protéines dans MongoDB ont les champs suivants :
 
 ---
 
-## 👨‍💻 Développement
+## Développement
 
 ### Modification du style
 
@@ -253,7 +253,7 @@ Les protéines dans MongoDB ont les champs suivants :
 
 ---
 
-## 📚 Ressources
+## Ressources
 
 - [Documentation FastAPI](https://fastapi.tiangolo.com/)
 - [Documentation MongoDB](https://www.mongodb.com/docs/)
@@ -262,13 +262,13 @@ Les protéines dans MongoDB ont les champs suivants :
 
 ---
 
-## 📄 Licence
+## Licence
 
 Projet réalisé dans le cadre du cours NoSQL - RTT - 2022-2025
 
 ---
 
-## ✅ Checklist de démarrage
+## Checklist de démarrage
 
 - [ ] MongoDB est démarré
 - [ ] Neo4j est démarré
@@ -280,4 +280,3 @@ Projet réalisé dans le cadre du cours NoSQL - RTT - 2022-2025
 - [ ] Statistiques affichées
 - [ ] Visualisation testée
 
-**Bon développement ! 🚀**
