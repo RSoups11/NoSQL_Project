@@ -1,6 +1,4 @@
-/* ==========================================
-   RESET & BASE STYLES
-   ========================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -18,9 +16,7 @@ body {
   flex-direction: column;
 }
 
-/* ==========================================
-   HEADER & NAVIGATION
-   ========================================== */
+
 header.rectangle {
   background: #003366;
   color: #FFB91C;
@@ -77,9 +73,7 @@ header.rectangle {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* ==========================================
-   MAIN CONTENT
-   ========================================== */
+
 main {
   flex: 1;
   padding: 2rem;
@@ -126,9 +120,7 @@ h3 {
   font-size: 1.3rem;
 }
 
-/* ==========================================
-   CARDS
-   ========================================== */
+
 .card {
   background: #f8f9fa;
   border-radius: 8px;
@@ -150,9 +142,6 @@ code {
   color: #d63384;
 }
 
-/* ==========================================
-   CUSTOM FILE UPLOAD (PAGE IMPORT)
-   ========================================== */
 .custom-file-upload {
   display: inline-flex;
   flex-direction: column;
@@ -200,9 +189,7 @@ code {
   display: block;
 }
 
-/* ==========================================
-   FORMS & INPUTS
-   ========================================== */
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -281,9 +268,7 @@ code {
   min-width: 200px;
 }
 
-/* ==========================================
-   BUTTONS
-   ========================================== */
+
 .btn {
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
@@ -324,9 +309,7 @@ code {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* ==========================================
-   STATUS MESSAGES
-   ========================================== */
+
 .status-message {
   margin: 1rem 0;
   padding: 1rem;
@@ -375,9 +358,7 @@ code {
   border: 1px solid #ffeeba;
 }
 
-/* ==========================================
-   TABLES
-   ========================================== */
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -424,9 +405,7 @@ code {
   margin-top: 1rem;
 }
 
-/* ==========================================
-   STATISTICS
-   ========================================== */
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -492,9 +471,7 @@ code {
   color: #003366;
 }
 
-/* ==========================================
-   VISUALIZATION
-   ========================================== */
+
 .graph-3d-container {
   width: 100%;
   height: 500px;
@@ -549,9 +526,7 @@ code {
   color: #003366;
 }
 
-/* ==========================================
-   FOOTER
-   ========================================== */
+
 footer.app-footer {
   background: #003366;
   color: #FFB91C;
@@ -567,9 +542,7 @@ footer.app-footer p {
   line-height: 1.8;
 }
 
-/* ==========================================
-   PAGE SPECIFIC STYLES
-   ========================================== */
+
 .app-importPage,
 .app-informationsPage,
 .app-statsPage,
@@ -577,9 +550,6 @@ footer.app-footer p {
   background: white;
 }
 
-/* ==========================================
-   RESPONSIVE DESIGN
-   ========================================== */
 @media (max-width: 768px) {
   header.rectangle {
     flex-direction: column;
@@ -645,9 +615,7 @@ footer.app-footer p {
   }
 }
 
-/* ==========================================
-   TASK 4 - BADGES
-   ========================================== */
+
 .badge {
   display: inline-block;
   padding: 0.25rem 0.6rem;
@@ -665,9 +633,7 @@ footer.app-footer p {
   color: #fff;
 }
 
-/* ==========================================
-   UTILITY CLASSES
-   ========================================== */
+
 .hidden {
   display: none !important;
 }
