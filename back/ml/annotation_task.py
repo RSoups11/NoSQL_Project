@@ -118,7 +118,7 @@ def annotate_protein(
         predictions = predictions[:top_k]
 
     result = {
-        "center": center_meta,  # entry/name/organism (vient de big_graph.py) :contentReference[oaicite:2]{index=2}
+        "center": center_meta, 
         "entry": entry,
         "label_field": label_field,
         "already_labeled": already_labeled,
